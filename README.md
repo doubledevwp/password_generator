@@ -10,4 +10,5 @@ Optional parameter is a boolean.  B is going to be a special character flag
 
 ## EXAMPLES
 ./password_generator.py 10
+
 ./password_generator.py 10 True
