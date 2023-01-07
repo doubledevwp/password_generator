@@ -2,17 +2,30 @@
 
 import sys
 import random
+import string
 
-def password_generator(num, special_char = False):
-    char = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
-    special = ',.<>/?;:[{}]\|!@#$%^&*()_+-=*'
+def password_generator(num, use_upper_chars = True, use_lower_chars = True, use_digit_chars = True, use_special_chars = False):
+    chars = ''
     password = ''
+    digit_chars = string.digits
+    lower_chars = string.ascii_lowercase
+    special_chars = string.punctuation
+    upper_chars = string.ascii_uppercase
 
-    if special_char:
-        char += special
+    if use_digit_chars:
+        chars += digit_chars
 
-    for l in range(num):
-        password += random.choice(char)
+    if use_lower_chars:
+        chars += lower_chars
+    
+    if use_special_chars:
+        chars += special_chars
+
+    if use_upper_chars:
+        chars += upper_chars
+
+    for i in range(num):
+        password += random.choice(chars)
 
     print(password)
 
