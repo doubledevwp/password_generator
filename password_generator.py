@@ -20,32 +20,20 @@ def password_generator(num = None,
 
     # Setting variables
     chars = ''
-    password = ''
 
     # Checking the flags
-    if use_digit_chars:
-        chars += string.digits
-
-    if use_lower_chars:
-        chars += string.ascii_lowercase
-
-    if use_special_chars:
-        chars += string.punctuation
-
-    if use_upper_chars:
-        chars += string.ascii_uppercase
+    chars = chars.join(string.digits) if use_digit_chars else chars
+    chars = chars.join(string.ascii_lowercase) if use_lower_chars else chars
+    chars = chars.join(string.punctuation) if use_special_chars else chars
+    chars = chars.join(string.ascii_uppercase) if use_upper_chars else chars
 
     # Validating there are characters to choose from external import call
     if not chars:
         print('No flags were set when calling password_generator')
         return
 
-    # Generating password
-    for i in range(num):
-        password += random.choice(chars)
-
     # Returning password
-    return password
+    return ''.join(random.choices(chars, k = num))
 
 # Main entry point of program
 if __name__ == '__main__':
@@ -53,7 +41,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
                         prog='password_generator.py',
                         description='Program to generate random passwords with the ability to customize length, which alphanumeric and special characters to use',
-                        
                         epilog='And now eat your damn cake!')
     parser.add_argument('-l', help='Length of password generated [REQUIRED]', required=True)
     parser.add_argument('-d', action='store_true', help='Add flag to inclue digits')
