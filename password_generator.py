@@ -1,61 +1,89 @@
 #!/usr/bin/env python3
 
-import sys
-import random
-import string
-import argparse
+import random # For random.choice()
+import string # For digits, lower|uppercase, and special characters
+import argparse # For help functionality when calling this file in the CLI
+from utilities import try_parse_int # Custom utility file for try_parse_int()
 
-def password_generator(num, use_upper_chars = True, use_lower_chars = True, use_digit_chars = True, use_special_chars = False):
+# Generate password
+# Returns generated password or None
+def password_generator(num = None,
+                       use_digit_chars = False,
+                       use_lower_chars = False,
+                       use_upper_chars = False,
+                       use_special_chars = False):
+
+    # Validating there was a number passed in from the external import call
+    if not num:
+        print('No length was specified when calling password_generator')
+        return
+
+    # Setting variables
     chars = ''
     password = ''
-    digit_chars = string.digits
-    lower_chars = string.ascii_lowercase
-    special_chars = string.punctuation
-    upper_chars = string.ascii_uppercase
 
+    # Checking the flags
     if use_digit_chars:
-        chars += digit_chars
+        chars += string.digits
 
     if use_lower_chars:
-        chars += lower_chars
-    
+        chars += string.ascii_lowercase
+
     if use_special_chars:
-        chars += special_chars
+        chars += string.punctuation
 
     if use_upper_chars:
-        chars += upper_chars
+        chars += string.ascii_uppercase
 
+    # Validating there are characters to choose from external import call
+    if not chars:
+        print('No flags were set when calling password_generator')
+        return
+
+    # Generating password
     for i in range(num):
         password += random.choice(chars)
 
-    print(password)
+    # Returning password
+    return password
 
+# Main entry point of program
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-len", "--length", type=int)
-    parser.add_argument("-d", "--digits", type=str)
-    parser.add_argument("-l", "--lowercase", type=str)
-    parser.add_argument("-u", "--uppercase", type=str)
-    parser.add_argument("-s", "--specialchars", type=str)
+    # Command line argument parser
+    parser = argparse.ArgumentParser(
+                        prog='password_generator.py',
+                        description='Program to generate random passwords with the ability to customize length, which alphanumeric and special characters to use',
+                        
+                        epilog='And now eat your damn cake!')
+    parser.add_argument('-l', help='Length of password generated [REQUIRED]', required=True)
+    parser.add_argument('-d', action='store_true', help='Add flag to inclue digits')
+    parser.add_argument('-lc', action='store_true', help='Add flag to include lowercase letters')
+    parser.add_argument('-uc', action='store_true', help='Add flag to include uppercase letters')
+    parser.add_argument('-s', action='store_true', help='Add flag to include special charaters')
 
+    # Parse the arguments
     args = parser.parse_args()
 
-    # if args.length:
-    #     length = args.length
-    length = args.length if isinstance(args.length, type(None)) or args.length < 1 else 0
-    if not isinstance(length, int):
-        exit("\n\tNo length specified!\n\tPlease refer back to the documentation:\n\n\t$ python password_generator.py -h\n")
+    # Convert password length argument to int
+    length = try_parse_int(args.l)
 
-    use_digits = True if str(args.digits).lower() in ["true", "none"] else False
-    use_lowers = True if str(args.lowercase).lower() in ["true", "none"] else False
-    use_uppers = True if str(args.uppercase).lower() in ["true", "none"] else False
-    use_specials = True if str(args.specialchars).lower() in ["true", "none"] else False
-    
+    # Validating that length is a number from the try_parse_int() above
+    if not length:
+        exit('\n\tNo length specified or input can\'t be converted to an number!\n\tPlease refer back to the documentation:\n\n\t$ python password_generator.py -h\n')
 
-    # if arguments > 1:
-    #     number_of_characters = int(sys.argv[1]) if sys.argv[1].isdigit() else exit("\n\tINVALID ENTRY!\n\n\tPlease enter a number\n\tfor you password length.\n")
-    #     add_special_characters = True if len(sys.argv) > 2 and sys.argv[2] == 'True' else None
-    # else:
-    #     exit("\n\tNo arguments passed in.\n\n\tPlease pass in at least\n\tthe length of the password\n\tyou are trying to create.\n")
+    # Checking for flags
+    use_digits = True if args.d else False
+    use_lowers = True if args.lc else False
+    use_uppers = True if args.uc else False
+    use_specials = True if args.s else False
 
-    # password_generator(number_of_characters, add_special_characters)
+    # Validating at least one flag is set to generate a password
+    if not(use_digits or use_lowers or use_specials or use_uppers):
+        exit('\n\tNo flags were set resulting in no password created!\n\tPlease refer to the documentation:\n\n\t$ python password_generator.py -h\n')
+
+    # Call password generator function
+    password = password_generator(length, use_digits, use_lowers, use_uppers, use_specials)
+
+    # Put here for testing
+    # TODO: Remove when completed
+    print(password)
