@@ -40,8 +40,18 @@ if __name__ == '__main__':
     # Command line argument parser
     parser = argparse.ArgumentParser(
                         prog='password_generator.py',
+                        formatter_class=argparse.RawTextHelpFormatter,
                         description='Program to generate random passwords with the ability to customize length, which alphanumeric and special characters to use',
-                        epilog='And now eat your damn cake!')
+                        epilog='Example 1: Generate a 10 character password with only special characters\n' +
+                               '1. password_generator.py -l 10 -s\n' +
+                               '2. password_generator.py -l 10 True\n\n' +
+                               'Example 2: Generate a 14 character password with only lowercase charcaters:\n' +
+                               '1. password_generator.py -l 14 -lc\n' +
+                               '2. password_generator.py -l 14 False True\n\n' +
+                               'Example 3: Generate a 50 character password with both lower and upper case characters:\n'
+                               '1. password_generator.py -l 50 -lc -uc\n' +
+                               '2. password_generator.py -l 50 False True True\n\n' +
+                               'And now eat your damn cake!')
     parser.add_argument('-l', help='Length of password generated [REQUIRED]', required=True)
     parser.add_argument('-d', action='store_true', help='Add flag to inclue digits')
     parser.add_argument('-lc', action='store_true', help='Add flag to include lowercase letters')
